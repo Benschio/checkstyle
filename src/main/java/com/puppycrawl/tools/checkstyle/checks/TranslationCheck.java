@@ -121,6 +121,11 @@ import com.puppycrawl.tools.checkstyle.utils.CommonUtil;
  * translations which must exist in project.
  * Default value is {@code {}}.
  * </li>
+ * <li>
+ * Property {@code validateDefaultBundleExistence} - Specify if a default
+ * resource bundle must exist in the project.
+ * Default value is {@code true}.
+ * </li>
  * </ul>
  * <p>
  * To configure the check to check only files which have '.properties' and
@@ -261,6 +266,11 @@ public class TranslationCheck extends AbstractFileSetCheck {
     private Set<String> requiredTranslations = new HashSet<>();
 
     /**
+     * Specify if a default resource bundle must exist in the project.
+     */
+    private boolean validateDefaultBundleExistence = true;
+
+    /**
      * Creates a new {@code TranslationCheck} instance.
      */
     public TranslationCheck() {
@@ -279,6 +289,16 @@ public class TranslationCheck extends AbstractFileSetCheck {
      */
     public void setBaseName(Pattern baseName) {
         this.baseName = baseName;
+    }
+
+    /**
+     * Setter to specify if a default resource bundle must exist in the project.
+     *
+     * @param validateDefaultBundleExistence {@code true} to validate existence of
+     * default resource bundle.
+     */
+    public void setValidateDefaultBundleExistence(boolean validateDefaultBundleExistence) {
+        this.validateDefaultBundleExistence = validateDefaultBundleExistence;
     }
 
     /**
@@ -340,7 +360,9 @@ public class TranslationCheck extends AbstractFileSetCheck {
     public void finishProcessing() {
         final Set<ResourceBundle> bundles = groupFilesIntoBundles(filesToProcess, baseName);
         for (ResourceBundle currentBundle : bundles) {
-            checkExistenceOfDefaultTranslation(currentBundle);
+            if(validateDefaultBundleExistence) {
+                checkExistenceOfDefaultTranslation(currentBundle);
+            }
             checkExistenceOfRequiredTranslations(currentBundle);
             checkTranslationKeys(currentBundle);
         }

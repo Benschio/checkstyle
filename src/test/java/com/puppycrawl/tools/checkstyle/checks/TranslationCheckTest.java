@@ -311,6 +311,24 @@ public class TranslationCheckTest extends AbstractXmlTestSupport {
     }
 
     @Test
+    public void testValidateDefaultBundleExistenceOption() throws Exception {
+        final DefaultConfiguration checkConfig = createModuleConfig(TranslationCheck.class);
+        checkConfig.addAttribute("validateDefaultBundleExistence", "false");
+
+        final File[] propertyFiles = {
+                new File(getPath("messages_translation_de.properties")),
+                new File(getPath("messages_translation_ja.properties")),
+        };
+
+        final String[] expected = CommonUtil.EMPTY_STRING_ARRAY;
+        verify(
+                createChecker(checkConfig),
+                propertyFiles,
+                getPath(""),
+                expected);
+    }
+
+    @Test
     public void testTranslationFilesAreMissing() throws Exception {
         final DefaultConfiguration checkConfig = createModuleConfig(TranslationCheck.class);
         checkConfig.addAttribute("requiredTranslations", "ja, de");
